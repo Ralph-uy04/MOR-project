@@ -2,7 +2,7 @@ Step-by-Step Execution Flow
 1.  Start the Python Object Detection & Classification
 - This script runs YOLOv10 to detect trash, classifies it, and stores results in Firestore.
 Run:
-python detection.py
+EcovisionProject.py
 
 
 ✔ What happens?
@@ -14,7 +14,7 @@ python detection.py
 2.  Start the Flask API Server
 - This server allows the ESP32 to fetch classification results from Firestore.
 Run:
-python flask_server.py
+Firebase database.py
 
 
 ✔ What happens?
