@@ -1,0 +1,12 @@
+# Essential Dependencies for Object Classification & Flask API
+opencv-python==4.7.0.72   # Computer vision and camera processing
+numpy==1.24.4             # Numerical operations
+ultralytics==8.3.107      # YOLO object detection
+firebase-admin==6.7.0     # Firebase Firestore interaction
+Flask==1.1.2              # Web framework for API
+
+# Optional Dependencies
+opencv-contrib-python==4.10.0.84   # Extended OpenCV functionalities
+torch==2.2.0                       # Required for YOLO if using PyTorch
+torchvision==0.17.0                # Torch vision utilities
+requests==2.28.1                    # Useful for future HTTP interactions
