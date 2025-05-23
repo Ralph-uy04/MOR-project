@@ -3,13 +3,13 @@
 #include <ArduinoJson.h>  
 
 // WiFi credentials
-const char* ssid = "GlobeAtHome_887BD_2.4";
-const char* password = "xUju7JQX";
-const char* serverUrl = "http://192.168.254.107:5000/get-latest-binary";  
+const char* ssid = "wifi-ssid-here";
+const char* password = "wifi-password-here";
+const char* serverUrl = "http://wifi-ip-goes-here:5000/get-latest-binary";  
 
 // LED pins
-const int greenLED = 12;  
-const int redLED = 13;    
+const int greenLED = 12;   // Biodegradable
+const int redLED = 13;     // Non-biodegradable
 
 void setup() {
   Serial.begin(115200);
@@ -21,11 +21,15 @@ void setup() {
   digitalWrite(redLED, LOW);
 
   Serial.println("Connecting to WiFi...");
-  WiFi.begin(ssid, password);
   
+  WiFi.mode(WIFI_STA);
+  WiFi.disconnect();
+  delay(200);
+  WiFi.begin(ssid, password);
+
   int retryCount = 0;
-  while (WiFi.status() != WL_CONNECTED && retryCount < 20) { 
-    delay(1000);
+  while (WiFi.status() != WL_CONNECTED && retryCount < 30) { // Increased retries
+    delay(500);
     Serial.print(".");
     retryCount++;
   }
@@ -35,7 +39,8 @@ void setup() {
     Serial.print("IP Address: ");
     Serial.println(WiFi.localIP());
   } else {
-    Serial.println("\nWiFi Connection Failed!");
+    Serial.println("\nWiFi Connection Failed! Restarting...");
+    ESP.restart();  // Restart ESP32 to attempt reconnection
   }
 }
 
@@ -43,6 +48,7 @@ void loop() {
   if (WiFi.status() == WL_CONNECTED) {
     HTTPClient http;
     http.begin(serverUrl);
+    
     int httpCode = http.GET(); 
 
     if (httpCode == 200) {
@@ -54,7 +60,7 @@ void loop() {
       DeserializationError error = deserializeJson(doc, payload);
 
       if (error) {
-        Serial.println("JSON parsing failed");
+        Serial.println("JSON parsing failed. Retrying...");
         return;
       }
 
@@ -79,7 +85,8 @@ void loop() {
 
     http.end();
   } else {
-    Serial.println("WiFi disconnected. Retrying...");
+    Serial.println("WiFi disconnected. Reconnecting...");
+    WiFi.disconnect();
     WiFi.reconnect();
   }
 
